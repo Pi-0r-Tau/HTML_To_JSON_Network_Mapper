@@ -6,4 +6,26 @@ Converts HTML DOM structures into JSON and provides interactive network with for
 
 ### Data Flow
 
-![flowchart of extension's data flow](flowchart.png)
+See doc/flowchart.png for better layout
+```mermaid
+---
+config:
+  layout: fixed
+  theme: dark
+  look: classic
+---
+flowchart TD
+    A["Webpage DOM"] -- "content.js" --> B["HTML Parser"]
+    B -- JSON Structure --> C["Background Script"]
+    C -- Message Passing --> D["Visualizer Tab"]
+    D -- "D3.js" --> E["Force Layout"] & F["Radial Layout"]
+    D -- "Louvain.js" --> G["Community Detection"]
+    H["User Input"] -- Layout Controls --> D
+    H -- Gravity Slider --> E
+    H -- Community Toggle --> G
+    H -- Zoom/Pan --> D
+    I["JSON Data"] -- Download --> D
+    D -- Network Data --> I
+    G -- Community Data --> I
+
+```
