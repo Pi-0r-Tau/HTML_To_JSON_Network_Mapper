@@ -9,9 +9,9 @@ Converts HTML DOM structures into JSON and provides interactive network with for
 ```mermaid
 ---
 config:
-  layout: fixed
   theme: dark
-  look: classic
+  look: neo
+  layout: elk
 ---
 flowchart TD
     A["Webpage DOM"] -- "content.js" --> B["HTML Parser"]
@@ -26,5 +26,6 @@ flowchart TD
     I["JSON Data"] -- Download --> D
     D -- Network Data --> I
     G -- Community Data --> I
+
 
 ```
