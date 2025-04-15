@@ -1,4 +1,4 @@
-// Logs a messafe to console indicating content script has loaded
+// Logs a message to console indicating content script has loaded
 console.log("Content script loaded");
 
 // Signal that content script is ready by sending message to background.js
