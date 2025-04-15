@@ -1,11 +1,8 @@
 /*
- Author: Corneliu S. (github.com/upphiminn)
+The MIT License (MIT)
 
- This is a javascript implementation of the Louvain
- community detection algorithm (http://arxiv.org/abs/0803.0476)
- Based on https://bitbucket.org/taynaud/python-louvain/overview
+Copyright (c) 2015 Corneliu Sugar.
 
- Code style is very imperative, I know :)
  */
 
 // Constants
