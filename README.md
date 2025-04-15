@@ -12,7 +12,7 @@ config:
   theme: dark
   look: neo
   layout: elk
----
+
 flowchart TD
     A["Webpage DOM"] -- "content.js" --> B["HTML Parser"]
     B -- JSON Structure --> C["Background Script"]
