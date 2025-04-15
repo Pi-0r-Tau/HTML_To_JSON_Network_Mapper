@@ -1,3 +1,5 @@
+'use strict';
+
 // Logs a message to console indicating content script has loaded
 console.log("Content script loaded");
 
