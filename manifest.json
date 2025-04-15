@@ -1,0 +1,25 @@
+{
+    "manifest_version": 3,
+    "name": "HTML to JSON Visualizer",
+    "version": "1.0",
+    "description": "Converts HTML to JSON and visualizes the structure as an interactive network graph",
+    "permissions": [
+        "activeTab",
+        "scripting",
+        "tabs"
+    ],
+    "host_permissions": {
+        "default_popup": "popup.html"
+    },
+    "content_scripts": [{
+        "matches": ["<all_urls>"],
+        "js": ["content.js"]
+    }],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_security_policy": {
+        "extension_pages": "script-src 'self'; object-src 'self'"
+    }
+    
+}
