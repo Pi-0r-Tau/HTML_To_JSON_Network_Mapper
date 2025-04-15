@@ -6,4 +6,4 @@ Converts HTML DOM structures into JSON and provides interactive network with for
 
 ### Data Flow
 
-![alt text](image.png)
+![flowchart of extension's data flow](flowchart.png)
