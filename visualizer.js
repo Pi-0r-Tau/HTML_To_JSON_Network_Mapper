@@ -205,6 +205,14 @@ d3.select("#search")
                 });
     });
 
+    /**
+     * Detects communities within a network of nodes and links using JLouvain algorithm
+     * @param {Array} nodes 
+     * @param {Array} links 
+     * @returns {Array} The input array of nodes with an added community property, indicating the 
+     * community the node belongs to.
+     */
+
     function detectCommunities(nodes, links) {
         const community = jLouvain()
             .nodes(nodes.map(node => node.id))
