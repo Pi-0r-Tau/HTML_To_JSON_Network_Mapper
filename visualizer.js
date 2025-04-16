@@ -116,5 +116,10 @@ function downloadConnectedData(selectedNode, nodes, links, connectedNodeIds) {
 
     downloadAsJson(data, `node-${selectedNode.id}-connections.json`);
 
-    
+}
+
+function resetHighlight() {
+    d3.selectAll('.node') .style('opacity', 1);
+    d3.selectAll('.link') .style('opacity', 1);
+    d3.select('#download-connected').style('display', 'none');
 }
