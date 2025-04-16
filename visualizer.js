@@ -64,3 +64,19 @@ const layoutFunctions = {
         return data;
     }
 };
+
+function highlightConnectedNodes(selectedNode, node, links) {
+    // Find all nodes connected to the selected node
+    const connectedNodeIds = new Set([selectedNode.id]);
+    links.forEach(link => {
+        if (link.source.id === selectedNode.id) connectedNodeIds.add(link.target.id);
+        if (link.target.id === selectedNode.id) connectedNodeIds.add(link.source.id);
+    });
+
+    // Update opacity for nodes and links
+    d3.selectAll('.node')
+        .style('opacity', d => connectedNodeIds.has(d.id) ? 1 : 0.1);
+
+    d3.selectAll('link')
+        .style('opacity')
+}
