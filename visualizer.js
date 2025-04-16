@@ -231,3 +231,31 @@ d3.select("#search")
 
         return nodes;
     }
+
+    /**
+     * 
+     * @param {Object} data 
+     * @returns {Object|Null} An object containing the nodes, links and the D3 simulationor null if data structure is invalid
+     */
+
+    function createForceLayout(data) {
+        if (!data || !data.nodes || !data.links) {
+            console.error('Invalid data structure:', data);
+            return null;
+        }
+
+        const simulation = d3.forceSimulation(data,nodes)
+            .force("link", d3.forceLink(data.links)
+                .id(d => d.id)
+                .distance(100))
+            .force("charge", d3.forceManyBody()
+                .strength(-1000))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("collide", d3.forceCollide(30));
+
+        return {
+            nodes: data.nodes,
+            links: data.links,
+            simulation: simulation
+        };
+    }
