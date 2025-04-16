@@ -174,3 +174,33 @@ function setupControls() {
     });
         
 }
+
+// Add search functionality 
+d3.select("#search")
+    .on("input", function() {
+        const searchTerm = this.value.toLowerCase();
+
+        d3.selectAll(".node")
+            .style("opacity", d => {
+                // Search in node content and attributes
+                const content = d.data?.content || "";
+                const attributes = d.data?.attributes ?
+                    Object.entries(d.data.attributes)
+                        .map(([key, value]) => `${key}=${value}`)
+                        .join(" ") : "";
+                const searchText = `${d.name} ${content} ${attributes}`.toLowerCase();
+
+                return searchText.includes(searchTerm) ? 1 : 0.1;
+            });
+
+            // Update links visibility
+            d3.selectAll(".link")
+                .style("opacity", d => {
+                    const sourceContent = d.source.data?.content || "";
+                    const targetContent = d.target.data?.content || "";
+                    const sourceMatch = sourceContent.toLowerCase().includes(searchTerm);
+                    const targetMatch = targetContent.toLowerCase().includes(searchTerm);
+
+                    return (sourceMatch || targetMatch) ? 0.6 : 0.1;
+                });
+    });
