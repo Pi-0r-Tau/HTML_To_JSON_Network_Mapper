@@ -78,5 +78,11 @@ function highlightConnectedNodes(selectedNode, node, links) {
         .style('opacity', d => connectedNodeIds.has(d.id) ? 1 : 0.1);
 
     d3.selectAll('link')
-        .style('opacity')
+        .style('opacity', d =>
+            connectedNodeIds.has(d.source.id) && connectedNodeIds.has(d.target.id) ? 1 : 0.1);
+    
+    // Download button for connected nodes
+    const downloadBtn = d3.select('#download-connected')
+            .style('display', 'block')
+            .on('click', () => downloadConnectedData(selectedNode, nodes, links, connectedNodeIds));
 }
