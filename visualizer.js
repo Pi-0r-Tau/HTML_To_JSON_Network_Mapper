@@ -65,7 +65,7 @@ const layoutFunctions = {
     }
 };
 
-function highlightConnectedNodes(selectedNode, node, links) {
+function highlightConnectedNodes(selectedNode, nodes, links) {
     // Find all nodes connected to the selected node
     const connectedNodeIds = new Set([selectedNode.id]);
     links.forEach(link => {
