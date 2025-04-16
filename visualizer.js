@@ -325,3 +325,127 @@ d3.select("#search")
         
         return layout(root).descendants();
     }
+
+/**
+ *Updates the visualization of the data using D3.js, clearing
+ any previous visualization and applies the user selected layout
+ * @param {Object} data
+ * @param {Array} data.nodes
+ * @param {Array} data.links
+ * @returns {Object}
+ */
+
+function updateVisualization(data) {
+    if (!data) return;
+    currentData = data;
+
+    // Clear previous visualization
+    d3.select("#chart").selectAll("*").remove();
+
+    const svg = d3.select("#chart")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+    const g = svg.append("g");
+
+    // Add zoom behavior
+    svg.call(d3.zoom()
+        .scaleExtent([0.1, 4])
+        .on("zoom", (event) => g.attr("transform", event.transform)));
+
+    // Apply selected layout
+    const layoutData = layoutFunctions[currentLayout](data);
+
+    // Create links
+    const link = g.selectAll(".link")
+        .data(layoutData.links)
+        .enter()
+        .append("line")
+        .attr("class", "link")
+        .style("stroke", "#999")
+        .style("stroke-width", 1);
+
+    // Create nodes with proper labels
+    const node = g.selectAll(".node")
+        .data(layoutData.nodes)
+        .enter()
+        .append("g")
+        .attr("class", "node")
+        .call(d3.drag()
+            .on("start", dragStarted)
+            .on("drag", dragged)
+            .on("end", dragEnded));
+
+    // Add circles to nodes
+    node.append("circle")
+        .attr("r", d => d.level === 0 ? 15 : d.level === 1 ? 10 : 5)
+        .style("fill", d => color(d.type || d.depth));
+
+    // Add visible labels
+    node.append("text")
+        .attr("dx", 12)
+        .attr("dy", ".35em")
+        .style("font-size", "10px")
+        .style("fill", "white")
+        .text(d => {
+            if (d.data && d.data.name) return d.data.name;
+            if (d.name) return d.name;
+            return d.id || "";
+        });
+
+    // Add tooltips with detailed information
+    node.append("title")
+        .text(d => {
+            let info = `Type: ${d.type || 'Node'}\n`;
+            info += `Name: ${d.name || 'Unnamed'}\n`;
+            if (d.data) {
+                if (d.data.content) info += `Content: ${d.data.content}\n`;
+                if (d.data.attributes) {
+                    info += 'Attributes:\n';
+                    Object.entries(d.data.attributes).forEach(([key, value]) => {
+                        info += `  ${key}: ${value}\n`;
+                    });
+                }
+            }
+            return info;
+        });
+
+    // Update positions based on layout type
+    if (currentLayout === 'force' && simulation) {
+        simulation.nodes(layoutData.nodes)
+            .on("tick", () => {
+                link
+                    .attr("x1", d => d.source.x)
+                    .attr("y1", d => d.source.y)
+                    .attr("x2", d => d.target.x)
+                    .attr("y2", d => d.target.y);
+
+                node
+                    .attr("transform", d => `translate(${d.x},${d.y})`);
+            });
+
+        simulation.force("link")
+            .links(layoutData.links);
+    } else {
+        // Position nodes for static layouts
+        node.attr("transform", d => `translate(${d.x},${d.y})`);
+
+        link
+            .attr("x1", d => d.source.x)
+            .attr("y1", d => d.source.y)
+            .attr("x2", d => d.target.x)
+            .attr("y2", d => d.target.y);
+    }
+
+    // Update node click behavior
+    node.on('click', (event, d) => {
+        event.stopPropagation();
+        highlightConnectedNodes(d, data.nodes, data.links);
+    });
+
+    // Add background click to reset
+    svg.on('click', () => {
+        resetHighlight();
+    });
+}
