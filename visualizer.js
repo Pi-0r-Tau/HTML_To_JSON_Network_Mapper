@@ -237,7 +237,6 @@ d3.select("#search")
      * @param {Object} data 
      * @returns {Object|Null} An object containing the nodes, links and the D3 simulationor null if data structure is invalid
      */
-
     function createForceLayout(data) {
         if (!data || !data.nodes || !data.links) {
             console.error('Invalid data structure:', data);
@@ -258,4 +257,71 @@ d3.select("#search")
             links: data.links,
             simulation: simulation
         };
+    }
+
+    /**
+     * Creates a radial layout for hierarchical data using D3.min.js
+     * @param {Object} data 
+     * @returns {Array} An array of node objects with radial coordinates
+     */
+
+    function createRadialLayout(data) {
+        const radius = Math.min(width, height) / 2 - 100;
+
+        const layout = d3.cluster()
+            .size([360, radius]);
+
+        const root = d3.hierarchy(data);
+        layout(root);
+
+        // Convert to radial coordinates
+        return root.descendants().map(d => {
+            const angle = (d.x - 90) / 180 * Math.PI;
+            return {
+                ...d,
+                x: d.y * Math.cos(angle) + width/2,
+                y: d.y * Math.sin(angle) + height/2
+            };
+        });
+    } 
+
+    /**
+     * Creates a tree layout for hierarchical data, NOT IMPLEMENTED 
+     * TODO: Implement 
+     * @param {Object} data
+     * @returns {Array} An array of node objects with tree layout coordinates 
+     */
+
+    function createTreeLayout(data) {
+        const layout = d3.tree()
+            .size([width - 100, height - 100]);
+
+        const root = d3.hierarchy(data);
+        return layout(root).descendants();
+    }
+
+    /** 
+     * Creates a cluster layout for hierarchical  data, NOT IMPLEMENTED
+     * TODO: Implement 
+     * @param {Object} data
+     * @returns {Array}
+     */
+
+    function createClusterLayout(data) {
+        const layout = d3.cluster()
+            .size([width - 100, height - 100]);
+
+        const root = d3.hierarchy(data);
+        return layout(root).descendants();
+    }
+
+    function createPackLayout(data) {
+        const layout = d3.pack()
+            .size([width - 100, height - 100])
+            .padding(3);
+
+        const root = d3.hierarchy(data)
+            .sum(d => d.value || 1);
+        
+        return layout(root).descendants();
     }
