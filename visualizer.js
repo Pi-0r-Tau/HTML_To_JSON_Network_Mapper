@@ -65,6 +65,14 @@ const layoutFunctions = {
     }
 };
 
+/**
+ * Highlights nodes and links connected directly to the selected node, updating their
+ * opacity, also adding a download btn for connected node data
+ * @param {Object} selectedNode - The node object selected by the user
+ * @param {Array} nodes - An array of node objects
+ * @param {Array} links - An array of link objects 
+ */
+
 function highlightConnectedNodes(selectedNode, nodes, links) {
     // Find all nodes connected to the selected node
     const connectedNodeIds = new Set([selectedNode.id]);
