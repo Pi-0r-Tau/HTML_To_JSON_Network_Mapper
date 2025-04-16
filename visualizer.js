@@ -489,3 +489,82 @@ window.addEventListener('resize', () => {
         updateVisualization(currentData);
     }
 });
+
+/**
+ * Transforms HTML data into network graph structure with nodes and links
+ * @param {Object} jsonData - The JSON Representation OF THE HTML
+ * @returns {Object} An object of nodes and links for the network graph
+ * @returns {Array} An array of node objects representing HTML elements
+ * @returns {Array} An array of link objects representing relationships between nodes
+ */
+
+function transformData(jsonData) {
+    // Create nodes and link arrays for the network graph
+    const nodes = [];
+    const links = [];
+    let nodeId = 0;
+
+    // Add root node
+    nodes.push({
+        id: nodeId,
+        name: 'HTML',
+        type: 'root',
+        level: 0,
+        data: { content: 'Root node'}
+    });
+
+    // Proces tags as communities 
+    Object.entries(jsonData).forEach(([tag, elements], tagIndex) => {
+        const tagNodeId = ++nodeId;
+
+        //Add tag node
+        nodes.push({
+            id: tagNodeId,
+            name: tag.toUpperCase(),
+            type: 'tag',
+            level: 1,
+            data: {
+                tag: tag,
+                count: elements.length,
+                content: `${elements.length} elements`
+            }
+        });
+
+        // Link to root
+        links.push({
+            source: 0,
+            target: tagNodeId,
+            value: 1,
+            type: 'contains'
+        });
+
+        // Process elements
+        elements.forEach((element, elementIndex) => {
+            const elementNodeId = ++nodeId;
+
+            // Add element node
+            nodes.push({
+                id: elementNodeId,
+                name: `${tag}#${elementIndex}`,
+                type: 'element',
+                level: 2,
+                data: {
+                    tag: tag,
+                    attributes: element.attributes,
+                    content: element.innerText
+                }
+            });
+
+            // Link to tag group
+            links.push({
+                source: tagNodeId,
+                target: elementNodeId,
+                value: 1,
+                type: 'contains'
+            });
+        });
+    });
+
+    return { nodes, links };
+    
+}
