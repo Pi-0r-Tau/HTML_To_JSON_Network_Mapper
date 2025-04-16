@@ -204,3 +204,22 @@ d3.select("#search")
                     return (sourceMatch || targetMatch) ? 0.6 : 0.1;
                 });
     });
+
+    function detectCommunities(nodes, links) {
+        const community = jLouvain()
+            .nodes(nodes.map(node => node.id))
+            .edges(links.map(link => ({
+                source: link.source.id,
+                target: link.target.id,
+                weight: 1
+            })));
+        
+        const result = community();
+
+        // Assign communities back to nodes
+        nodes.forEach(node => {
+            node.community = result[node.id];
+        });
+
+        return nodes;
+    }
