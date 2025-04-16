@@ -123,3 +123,54 @@ function resetHighlight() {
     d3.selectAll('.link') .style('opacity', 1);
     d3.select('#download-connected').style('display', 'none');
 }
+
+function setupControls() {
+    const controls = d3.select("#controls");
+
+    // Add search input
+    const searchInput = controls.append("input")
+        .attr("type", "text")
+        .attr("id", "search-input")
+        .attr("placeholder", "search nodes...")
+        .style("margin-right", "10px");
+
+    // Add layout selector
+    controls.append("select")
+        .attr("id", "layout-select")
+        .selectAll("option")
+        .data(Object.keys(layoutFunctions))
+        .enter()
+        .append("option")
+        .text(d => d)
+        .attr("value", d => d);
+
+    // Add search behavior
+    searchInput.on("input", function() {
+        const searchTerm = this.value.toLowerCase();
+
+        // Update node visibility
+        d3.selectAll(".node")
+            .style("opacity", d => {
+                const content = d.data?.content || d.data?.name || d.name || "";
+                return content.toLowerCase().includes(searchTerm) ? 1 : 0.2;
+            });
+
+        // Update link visibility
+        d3.selectAll(".link")
+            .style("opacity", d => {
+                const sourceContent = d.source.data?.content || d.source.name || "";
+                const targetContent = d.target.data?.content || d.target.name || "";
+                return sourceContent.toLowerCase().includes(searchTerm) || targetContent.toLowerCase().includes(searchTerm) ? 0.6 : 0.1;
+            });
+
+    });
+
+    // Add layout change behavior
+    d3.select("#layout-select").on("change", function() {
+        currentLayout = this.value;
+        if (currentData) {
+            updateVisualization(currentData)
+        }
+    });
+        
+}
