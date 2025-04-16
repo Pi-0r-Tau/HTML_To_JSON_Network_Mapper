@@ -466,3 +466,26 @@ function dragEnded(event, d) {
     d.fx = null;
     d.fy - null;
 }
+
+// Message handler 
+chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
+    console.log('Visualizer received message:', request);
+
+    if (request.action === "visualizeJson" && request.json) {
+        currentData = request.json;
+        const graphData = transformData(request.json);
+        console.log('Transformed data:', graphData);
+        updateVisualization(graphData);
+        sendResponse({ success: true });
+        return true;
+    }
+});
+
+// Update on window resize
+window.addEventListener('resize', () => {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    if (currentData) {
+        updateVisualization(currentData);
+    }
+});
