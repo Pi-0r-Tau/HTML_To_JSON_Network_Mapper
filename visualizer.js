@@ -94,3 +94,27 @@ function highlightConnectedNodes(selectedNode, nodes, links) {
             .style('display', 'block')
             .on('click', () => downloadConnectedData(selectedNode, nodes, links, connectedNodeIds));
 }
+
+/**
+ * Downloads the data of nodes and links connected to the selected node as a JSON file
+ * @param {Object} selectedNode  - The node object that is selected by user
+ * @param {Array} nodes 
+ * @param {Array} links 
+ * @param {Set} connectedNodeIds - A set of IDs of nodes connected to the selected node
+ */
+
+function downloadConnectedData(selectedNode, nodes, links, connectedNodeIds) {
+    const connectedNodes = nodes.filter(n => connectedNodeIds.has(n.id));
+    const connectedLinks = links.filter(l => 
+        connectedNodeIds.has(l.source.id) && connectedNodeIds.has(l.target,id));
+
+    const data = {
+        centralNode: selectedNode,
+        connectedNodes: connectedNodes,
+        links: connectedLinks
+    };
+
+    downloadAsJson(data, `node-${selectedNode.id}-connections.json`);
+
+    
+}
